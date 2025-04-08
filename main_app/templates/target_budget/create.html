@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Target Budget for {{ current_year }}</h1>
+    
+   
+    <table class="budget-table">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Cost Category</th>
+                <th>Description</th>
+                <th>Cost Target</th>
+                <th>Target Income</th>
+                <th>Date Added</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for budget in target_budgets %}
+                <tr>
+                    <td>{{ budget.get_month_display }}</td>
+                    <td>{{ budget.cost_category.name }}</td>
+                    <td>{{ budget.description }}</td>
+                    <td>${{ budget.cost_target }}</td>
+                    <td>${{ budget.target_month_income }}</td>
+                    <td>{{ budget.date_added }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    <button id="add-target-budget-btn">Add Target Budget</button>
+
+    
+    <div id="add-target-budget-popup" class="form-popup" style="display: none;">
+        <h2>Add Target Budget</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ target_budget_form.as_p }}
+            <button type="submit">Submit</button>
+            <button type="button" id="close-popup-btn">Close</button>
+        </form>
+    </div>
+
+    <script>
+        
+        document.getElementById('add-target-budget-btn').addEventListener('click', function() {
+            document.getElementById('add-target-budget-popup').style.display = 'block';
+        });
+
+        document.getElementById('close-popup-btn').addEventListener('click', function() {
+            document.getElementById('add-target-budget-popup').style.display = 'none';
+        });
+    </script>
+{% endblock %}

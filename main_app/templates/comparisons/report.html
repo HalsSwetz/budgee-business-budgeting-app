@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Budget Comparison for {{ selected_month }}/{{ selected_year }}</h1>
+
+<form method="get">
+    <label for="month">Month:</label>
+    <select name="month" id="month">
+        {% for month_num, month_name in month_choices %}
+        <option value="{{ month_num }}" {% if month_num = selected_month %}selected{% endif %}>{{ month_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="year">Year:</label>
+    <select name="year" id="year">
+        {% for year_num, year_name in year_choices %}
+        <option value="{{ year_num }}" {% if year_num = selected_year %}selected{% endif %}>{{ year_name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Update</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Target</th>
+            <th>Actual</th>
+            <th>Variance Amount</th>
+            <th>Variance Percentage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in comparison_data %}
+        <tr>
+            <td>{{ item.category }}</td>
+            <td>{{ item.target }}</td>
+            <td>{{ item.actual }}</td>
+            <td>{{ item.variance_amount }}</td>
+            <td>{{ item.variance_percentage }}%</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

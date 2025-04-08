@@ -4,6 +4,18 @@ from django.utils import timezone
 
 # Create your models here.
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    company_name = models.CharField(max_length=200)
+    email = models.EmailField()
+    name = models.CharField(max_length=255)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+
 MONTH_CHOICES = [
     (1, 'January'),
     (2, 'February'),

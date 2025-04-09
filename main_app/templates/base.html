@@ -23,12 +23,24 @@
       </div>
       <nav>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/target-budget">Target Budget</a></li>
-          <li><a href="/actual-budget">Actual Budget</a></li>
-          <li><a href="/compare-budget">Compare Budgets</a></li>
-          <li><a href="/profile">Profile</a></li>
-          <li><a href="/logout">Logout</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'target-budget-view' %}">Target Budget</a></li>
+          <li><a href="{% url 'actual-budget-view' %}">Actual Budget</a></li>
+          <li><a href="{% url 'budget-comparison-view' %}">Compare Budgets</a></li>
+          <li><a href="{% url 'profile' %}">Profile</a></li>
+          <li><a href="{% url 'about' %}">About</a></li>
+          <li>
+            <form id="logout-form" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit">Log out</button>
+            </form>
+          </li>
+        {% else %}
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'home' %}">Login</a></li>
+        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+      {% endif %}
+
         </ul>
       </nav>
     </header>

@@ -1,15 +1,25 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Profile</title>
-</head>
-<body>
-    <h1>{{ user_profile.user.username }}'s Profile</h1>
-    <p>Name: {{ user_profile.name }}</p>
-    <p>Email: {{ user_profile.email }}</p>
-    <p>Company: {{ user_profile.company_name }}</p>
-    <p>Date Joined: {{ user_profile.date_joined }}</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block head %}
+  <meta name="description" content="{{ user_profile.user.username }}'s Profile">
+{% endblock %}
+
+{% block content %}
+  <section class="profile-container">
+    <h2 class="profile-title">{{ user_profile.user.username }}'s Profile</h2>
+    
+    <div class="profile-info">
+      <p><strong>Name:</strong> {{ user_profile.name }}</p>
+      <p><strong>Email:</strong> {{ user_profile.email }}</p>
+      <p><strong>Company:</strong> {{ user_profile.company_name }}</p>
+      <p><strong>Date Joined:</strong> {{ user_profile.date_joined|date:"F j, Y" }}</p>
+    </div>
+
+
+    <div class="profile-buttons">
+      <a href="{% url 'target-budget-view' %}" class="profile-button">My Target Budgets</a>
+      <a href="{% url 'actual-budget-view' %}" class="profile-button">My Actual Budgets</a>
+    </div>
+  </section>
+{% endblock %}

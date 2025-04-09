@@ -1,21 +1,27 @@
-{% load static %} 
-{% block head %}
-<link rel="stylesheet" href="{% static 'css/form.css' %}" />
-{% endblock %} 
-{% block content %}
-<div class="page-header">
-  <h1>Sign Up</h1>
-  <img src="{% static 'images/parrot3.png' %}" alt="A cat using a computer" />
-</div>
-{% if error_message %}
-  <p class="red-text">{{ error_message }}</p>
-{% endif %}
-<form action="" method="post" class="form-container" autocomplete="off">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
-  <button type="submit" class="btn submit">Submit!</button>
-</form>
+{% extends 'base.html' %}
 
+{% block head %}
+  <meta name="description" content="Sign up for BudgEase">
+{% endblock %}
+
+{% block content %}
+  <section class="signup-container">
+    <h2 class="signup-title">Create Your Account</h2>
+    
+    <form method="POST" class="signup-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <div class="form-group">
+        <label for="id_company_name">Company Name</label>
+        <input type="text" name="company_name" id="id_company_name" class="form-control" required>
+      </div>
+
+      <button type="submit" class="signup-button">Sign Up</button>
+
+      {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+      {% endif %}
+    </form>
+  </section>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -32,7 +33,7 @@ MONTH_CHOICES = [
 ]
 
 class CostCategory(models.Model):
-    CATEGORY_CHOICES = [
+    CHOICES = [
         ('operating', 'Operating'),
         ('employee', 'Employee'),
         ('marketing', 'Marketing'),
@@ -43,7 +44,7 @@ class CostCategory(models.Model):
         ('travel', 'Travel'),
         ('miscellaneous', 'Miscellaneous'),
     ]
-    name = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    name = models.CharField(max_length=100, choices=CHOICES)
     
     def __str__(self):
         return self.get_name_display()
@@ -61,7 +62,8 @@ class TargetBudget(models.Model):
 
     def __str__(self):
         return f"{self.cost_category.name} - {self.get_month_display()}/{self.year}"
-    
+    def get_absolute_url(self):
+        return reverse('target-budget-view', kwargs={'targetbudget_id': self.id})
 
 class ActualBudget(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -75,3 +77,5 @@ class ActualBudget(models.Model):
 
     def __str__(self):
         return f"{self.cost_category.name} - {self.get_month_display()}/{self.year}"
+    def get_absolute_url(self):
+        return reverse('actual-budget-view', kwargs={'actualbudget_id': self.id})

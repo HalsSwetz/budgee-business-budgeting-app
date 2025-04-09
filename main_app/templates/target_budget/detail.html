@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Target Budget Details for {{ target_budget.get_month_display }}, {{ target_budget.year }}</h1>
+
+    <table class="budget-table">
+        <thead>
+            <tr>
+                <th>Cost Category</th>
+                <th>Description</th>
+                <th>Cost Target</th>
+                <th>Target Income</th>
+                <th>Date Added</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in target_budget_items %}
+                <tr>
+                    <td>{{ item.cost_category.name }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>${{ item.cost_target }}</td>
+                    <td>${{ item.target_month_income }}</td>
+                    <td>{{ item.date_added }}</td>
+                    <td>
+                        <a href="{% url 'target-budget-edit' item.pk %}">Edit</a> | 
+                        <a href="{% url 'target-budget-delete' item.pk %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{% url 'target-budget-create' %}">Add Another Item</a>
+{% endblock %}

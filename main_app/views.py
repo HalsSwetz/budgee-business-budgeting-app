@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.views.generic import UpdateView, DeleteView
 from .models import TargetBudget, ActualBudget, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
@@ -7,7 +8,7 @@ from .forms import TargetBudgetForm, ActualBudgetForm
 from .models import MONTH_CHOICES
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.urls import reverse_lazy
 from datetime import datetime
 # Create your views here.
 CURRENT_YEAR = datetime.now().year
@@ -56,12 +57,27 @@ def target_budget_view(request):
             new_budget = target_budget_form.save(commit=False)
             new_budget.user = request.user
             new_budget.save()
-            return redirect('target_budget')
+            return redirect('target-budget-view')
         
     return render(request, 'target_budget/create.html', {
         'target_budgets': target_budgets,
         'target_budget_form': target_budget_form,
     })
+
+class TargetBudgetUpdateView(LoginRequiredMixin, UpdateView):
+    model = TargetBudget
+    form_class = TargetBudgetForm
+    template_name = 'target_budget/edit.html'
+
+    def get_success_url(self):
+        return reverse_lazy('target-budget-view')
+
+class TargetBudgetDeleteView(LoginRequiredMixin, DeleteView):
+    model = TargetBudget
+    template_name = 'target_budget/delete.html'
+    success_url = reverse_lazy('target-budget-view')
+
+
 
 def actual_budget_view(request):
     actual_budgets = ActualBudget.objects.filter(user=request.user)
@@ -73,12 +89,28 @@ def actual_budget_view(request):
             new_budget = actual_budget_form.save(commit=False)
             new_budget.user = request.user
             new_budget.save()
-            return redirect('actual_budget')
+            return redirect('actual-budget')
 
     return render(request, 'actual_budget/create.html', {
         'actual_budgets': actual_budgets,
         'actual_budget_form': actual_budget_form,
     })
+
+class ActualBudgetUpdateView(LoginRequiredMixin, UpdateView):
+    model = ActualBudget
+    form_class = ActualBudgetForm
+    template_name = 'actual_budget/edit.html'
+
+    def get_success_url(self):
+        return reverse_lazy('actual-budget-view')
+
+class ActualBudgetDeleteView(LoginRequiredMixin, DeleteView):
+    model = ActualBudget
+    template_name = 'actual_budget/delete.html'
+    success_url = reverse_lazy('actual-budget-view')
+
+
+
 
 def budget_comparison_view(request):
     selected_month = request.GET.get('month', 1)

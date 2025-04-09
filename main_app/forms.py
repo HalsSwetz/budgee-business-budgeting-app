@@ -1,5 +1,5 @@
 from django import forms
-from .models import TargetBudget, ActualBudget
+from .models import TargetBudget, ActualBudget, CostCategory
 from datetime import datetime
 
 CURRENT_YEAR = datetime.now().year
@@ -12,6 +12,12 @@ class TargetBudgetForm(forms.ModelForm):
 
     year = forms.ChoiceField(choices=YEAR_CHOICES, widget=forms.Select)
 
+    cost_category = forms.ModelChoiceField(
+        queryset=CostCategory.objects.all(), 
+        empty_label="Select a Category"  
+    )
+
+
 
 class ActualBudgetForm(forms.ModelForm):
     class Meta:
@@ -19,3 +25,8 @@ class ActualBudgetForm(forms.ModelForm):
         fields = ['month', 'year', 'cost_category', 'description', 'actual_spent', 'actual_month_income']
 
     year = forms.ChoiceField(choices=YEAR_CHOICES, widget=forms.Select)
+
+    cost_category = forms.ModelChoiceField(
+        queryset=CostCategory.objects.all(), 
+        empty_label="Select a Category" 
+    )

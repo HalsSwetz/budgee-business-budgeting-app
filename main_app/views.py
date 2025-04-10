@@ -66,7 +66,10 @@ def target_budget_view(request):
         year=selected_year
     )
 
-    target_budget_form = TargetBudgetForm()
+    target_budget_form = TargetBudgetForm(initial={
+        'month': selected_month,
+        'year': selected_year
+    })
 
     if request.method == 'POST':
         target_budget_form = TargetBudgetForm(request.POST)
@@ -120,8 +123,8 @@ def actual_budget_view(request):
     current_year = datetime.now().year
     current_month = datetime.now().month
 
-    selected_month = int(request.GET.get('month', current_month))
-    selected_year = int(request.GET.get('year', current_year))
+    selected_month = request.GET.get('month', current_month)
+    selected_year = request.GET.get('year', current_year)
 
     month_choices = [(i, month_name[i]) for i in range(1, 13)]
     year_choices = [year for year in range(current_year - 1, current_year + 5)]
@@ -132,7 +135,10 @@ def actual_budget_view(request):
         year=selected_year
     )
 
-    form = ActualBudgetForm()
+    form = ActualBudgetForm(initial={
+        'month': selected_month,
+        'year': selected_year
+    })
 
     if request.method == 'POST':
         form = ActualBudgetForm(request.POST)

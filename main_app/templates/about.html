@@ -1,8 +1,27 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+
+{% block head %}
+  <meta name="description" content="Learn more about BudgEase - Business Budgeting and Forecasting">
+{% endblock %}
+
 {% block content %}
-<h1 class="about-title">Budgease</h1>
-<hr />
-<p class="page-content">
-  Use BudgEase to input your budget, and compare your business's goals with your monthly expenditures
-</p>
+  <section class="about-container">
+    <h2 class="about-title">About BudgEase</h2>
+    <hr />
+
+    <div class="about-content">
+      <p class="about-description">
+        <strong>BudgEase</strong> is an innovative tool designed to help businesses of all sizes track their finances, manage monthly expenses, and achieve financial goals with ease. By providing a simple, intuitive platform, BudgEase ensures that you have a clear view of your income, expenses, and budgeting goals, all in one place.
+      </p>
+
+      <p class="about-description">
+        With BudgEase, you can effortlessly input your budget, compare your actual spending with your targets, and adjust your plans as needed. Whether you’re managing a startup or an established business, BudgEase is here to help you keep your finances on track and ensure that you achieve your financial goals.
+      </p>
+
+      <h3 class="about-programmer-title">About the Developer</h3>
+      <p class="about-programmer">
+        <strong>Halsey Swetzoff</strong> is the creator behind BudgEase. With a strong passion for finance and technology, Halsey understands the critical importance of keeping track of business finances, no matter the size of the business. BudgEase was built to simplify the budgeting process, making financial management more accessible to entrepreneurs, managers, and business owners.
+      </p>
+    </div>
+  </section>
 {% endblock %}

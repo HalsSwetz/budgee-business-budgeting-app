@@ -39,7 +39,7 @@
                 <td>{{ budget.description }}</td>
                 <td>${{ budget.actual_spent }}</td>
                 <td>${{ budget.actual_month_income }}</td>
-                <td>{{ budget.date_added }}</td>
+                <td>{{ budget.date_added|date:"Y-m-d" }}</td>
                 <td>
                     <button class="edit-btn" data-id="{{ budget.id }}">Edit</button>
                     <button class="delete-btn" data-id="{{ budget.id }}">Delete</button>

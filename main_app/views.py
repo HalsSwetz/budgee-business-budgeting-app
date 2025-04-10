@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import UpdateView, DeleteView, ListView, CreateView
 from .models import TargetBudget, ActualBudget, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
@@ -7,13 +6,10 @@ from django.contrib.auth import login
 from .forms import TargetBudgetForm, ActualBudgetForm
 from .models import MONTH_CHOICES
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-from django.urls import reverse_lazy
 from datetime import datetime
 from calendar import month_name
 from django.forms.models import model_to_dict
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 CURRENT_YEAR = datetime.now().year
@@ -178,7 +174,7 @@ def edit_actual_budget(request, pk):
 
         return JsonResponse({'errors': form.errors}, status=400)
     
-@csrf_exempt
+
 @require_http_methods(["DELETE"])
 @login_required
 def delete_actual_budget(request, pk):
@@ -186,28 +182,61 @@ def delete_actual_budget(request, pk):
     actual_budget.delete()
     return JsonResponse({'success': True})
 
+@login_required
 def budget_comparison_view(request):
     selected_month = request.GET.get('month', 1)
     selected_year = request.GET.get('year', CURRENT_YEAR)
+
     target_budgets = TargetBudget.objects.filter(user=request.user, month=selected_month, year=selected_year)
     actual_budgets = ActualBudget.objects.filter(user=request.user, month=selected_month, year=selected_year)
-    comparison_data = [
-        {
+
+    total_target_cost = 0
+    total_actual_cost = 0
+
+    comparison_data = []
+    for target in target_budgets:
+        
+        actual_spent = actual_budgets.filter(cost_category=target.cost_category).first()
+        actual_value = actual_spent.actual_spent if actual_spent else 0
+
+        variance_amount = actual_value - target.cost_target
+        variance_percentage = (variance_amount / target.cost_target * 100) if target.cost_target else 0
+
+        comparison_data.append({
             'category': target.cost_category.name,
             'target': target.cost_target,
-            'actual': actual_spent.actual_spent if (actual_spent := actual_budgets.filter(cost_category=target.cost_category).first()) else 0,
-            'variance_amount': (actual_spent.actual_spent if actual_spent else 0) - target.cost_target,
-            'variance_percentage': ((actual_spent.actual_spent if actual_spent else 0) - target.cost_target) / target.cost_target * 100 if target.cost_target != 0 else 0
-        }
-        for target in target_budgets
+            'actual': actual_value,
+            'variance_amount': variance_amount,
+            'variance_percentage': variance_percentage
+        })
+
+        total_target_cost += target.cost_target
+        total_actual_cost += actual_value
+
+    comparison_data.append({
+        'category': 'Total',
+        'target': total_target_cost,
+        'actual': total_actual_cost,
+        'variance_amount': total_actual_cost - total_target_cost,
+        'variance_percentage': ((total_actual_cost - total_target_cost) / total_target_cost * 100) if total_target_cost else 0
+    })
+
+    month_choices = [
+        (1, 'January'), (2, 'February'), (3, 'March'),
+        (4, 'April'), (5, 'May'), (6, 'June'),
+        (7, 'July'), (8, 'August'), (9, 'September'),
+        (10, 'October'), (11, 'November'), (12, 'December')
     ]
-    month_choices = MONTH_CHOICES
     year_choices = [(i, str(i)) for i in range(CURRENT_YEAR, CURRENT_YEAR + 11)]
+
     template_name = 'comparisons/data_visualization.html' if 'data-visualization/' in request.path else 'comparisons/report.html'
+
     return render(request, template_name, {
         'month_choices': month_choices,
         'year_choices': year_choices,
         'selected_month': selected_month,
         'selected_year': selected_year,
         'comparison_data': comparison_data,
+        'total_target_cost': total_target_cost,
+        'total_actual_cost': total_actual_cost,
     })

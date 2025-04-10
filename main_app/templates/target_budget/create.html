@@ -24,7 +24,13 @@
                     <td>${{ budget.cost_target }}</td>
                     <td>${{ budget.target_month_income }}</td>
                     <td>{{ budget.date_added }}</td>
+                    <td>
+                        <!-- Edit and Delete buttons -->
+                        <button class="edit-btn" data-id="{{ budget.id }}">Edit</button>
+                        <button class="delete-btn" data-id="{{ budget.id }}">Delete</button>
+                    </td>
                 </tr>
+                
             {% endfor %}
         </tbody>
     </table>
@@ -43,6 +49,16 @@
         </form>
     </div>
 
+    <!-- <div id="edit-target-budget-popup" class="form-popup" style="display: none;">
+        <h2>Edit Target Budget</h2>
+        <form id="edit-target-budget-form" method="POST">
+            {% csrf_token %}
+            {{ target_budget_form.as_p }}
+            <button type="submit">Update</button>
+            <button type="button" id="close-edit-popup-btn">Close</button>
+        </form>
+    </div> -->
+
     <script>
         
         document.getElementById('add-target-budget-btn').addEventListener('click', function() {
@@ -52,5 +68,47 @@
         document.getElementById('close-popup-btn').addEventListener('click', function() {
             document.getElementById('add-target-budget-popup').style.display = 'none';
         });
+
+        // document.querySelectorAll('.edit-btn').forEach(function(button) {
+        //     button.addEventListener('click', function() {
+        //         const budgetId = this.getAttribute('data-id');
+        //         // Fetch the budget data from the server using AJAX or through a prepopulated form
+        //         fetch(`/edit-budget/${budgetId}/`)
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 // Populate the form with data (for editing)
+        //                 document.getElementById('edit-target-budget-form').action = `/edit-budget/${budgetId}/`;
+        //                 // Assuming you have fields in the form, set the values accordingly
+        //                 document.getElementById('edit-target-budget-form').elements['description'].value = data.description;
+        //                 document.getElementById('edit-target-budget-form').elements['cost_target'].value = data.cost_target;
+        //                 document.getElementById('edit-target-budget-popup').style.display = 'block';
+        //             });
+        //     });
+        // });
+
+        // document.getElementById('close-edit-popup-btn').addEventListener('click', function() {
+        //     document.getElementById('edit-target-budget-popup').style.display = 'none';
+        // });
+
+        // ent.querySelectorAll('.delete-btn').forEach(function(button) {
+        //     button.addEventListener('click', function() {
+        //         const budgetId = this.getAttribute('data-id');
+        //         const confirmation = confirm('Are you sure you want to delete this budget?');
+        //         if (confirmation) {
+        //             fetch(`/delete-budget/${budgetId}/`, {
+        //                 method: 'DELETE',
+        //                 headers: {
+        //                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        //                 },
+        //             }).then(response => {
+        //                 if (response.ok) {
+        //                     // Optionally, remove the row from the table or reload the page
+        //                     location.reload();
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });   
+
     </script>
 {% endblock %}

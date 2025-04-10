@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import UpdateView, DeleteView
 from .models import TargetBudget, ActualBudget, UserProfile
 from django.contrib.auth.forms import UserCreationForm
@@ -8,6 +8,7 @@ from .forms import TargetBudgetForm, ActualBudgetForm
 from .models import MONTH_CHOICES
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from datetime import datetime
 # Create your views here.
@@ -64,19 +65,24 @@ def target_budget_view(request):
         'target_budget_form': target_budget_form,
     })
 
-class TargetBudgetUpdateView(LoginRequiredMixin, UpdateView):
-    model = TargetBudget
-    form_class = TargetBudgetForm
-    template_name = 'target_budget/edit.html'
+def edit_target_budget(request, pk):
+    target_budget = get_object_or_404(TargetBudget, pk=pk)
 
-    def get_success_url(self):
-        return reverse_lazy('target-budget-view')
+    if request.method == 'POST':
+        form = TargetBudgetForm(request.POST, instance=target_budget)
+        if form.is_valid():
+            form.save()
+            return redirect('target-budget-view')
+    else:
+        form = TargetBudgetForm(instance=target_budget)
 
-class TargetBudgetDeleteView(LoginRequiredMixin, DeleteView):
-    model = TargetBudget
-    template_name = 'target_budget/delete.html'
-    success_url = reverse_lazy('target-budget-view')
+    return render(request, 'edit_target_budget.html', {'form': form})
 
+
+def delete_target_budget(request, pk):
+    target_budget = get_object_or_404(TargetBudget, pk=pk)
+    target_budget.delete()
+    return JsonResponse({'success': True})
 
 
 def actual_budget_view(request):
@@ -96,18 +102,18 @@ def actual_budget_view(request):
         'actual_budget_form': actual_budget_form,
     })
 
-class ActualBudgetUpdateView(LoginRequiredMixin, UpdateView):
-    model = ActualBudget
-    form_class = ActualBudgetForm
-    template_name = 'actual_budget/edit.html'
+# class ActualBudgetUpdateView(LoginRequiredMixin, UpdateView):
+#     model = ActualBudget
+#     form_class = ActualBudgetForm
+#     template_name = 'actual_budget/edit.html'
 
-    def get_success_url(self):
-        return reverse_lazy('actual-budget-view')
+#     def get_success_url(self):
+#         return reverse_lazy('actual-budget-view')
 
-class ActualBudgetDeleteView(LoginRequiredMixin, DeleteView):
-    model = ActualBudget
-    template_name = 'actual_budget/delete.html'
-    success_url = reverse_lazy('actual-budget-view')
+# class ActualBudgetDeleteView(LoginRequiredMixin, DeleteView):
+#     model = ActualBudget
+#     template_name = 'actual_budget/delete.html'
+#     success_url = reverse_lazy('actual-budget-view')
 
 
 

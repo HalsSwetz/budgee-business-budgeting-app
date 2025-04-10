@@ -62,8 +62,14 @@ class TargetBudget(models.Model):
 
     def __str__(self):
         return f"{self.cost_category.name} - {self.get_month_display()}/{self.year}"
+
+    def get_month_display(self):
+        return dict(MONTH_CHOICES).get(self.month, "Unknown")
+
     def get_absolute_url(self):
-        return reverse('target-budget-view', kwargs={'targetbudget_id': self.id})
+        return reverse('target-budget-view')
+
+
 
 class ActualBudget(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -77,5 +83,9 @@ class ActualBudget(models.Model):
 
     def __str__(self):
         return f"{self.cost_category.name} - {self.get_month_display()}/{self.year}"
+
+    def get_month_display(self):
+        return dict(MONTH_CHOICES).get(self.month, "Unknown")
+
     def get_absolute_url(self):
-        return reverse('actual-budget-view', kwargs={'actualbudget_id': self.id})
+        return reverse('actual-budget-view')

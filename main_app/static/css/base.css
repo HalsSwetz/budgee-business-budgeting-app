@@ -109,7 +109,7 @@
   }
   
   button:hover {
-    background-color: #E74C3C;
+    background-color: #f89318;
   }
   
   .profile-button {
@@ -117,7 +117,6 @@
     background-color: #27AE60;
     color: white;
     border: none;
-    /* margin-top: 20px; */
     padding: 5px 20px;
     font-size: 1rem;
     cursor: pointer;
@@ -385,7 +384,6 @@
   }
 
 
-
   .profile-container {
     max-width: 900px;
     margin: 50px auto;
@@ -416,7 +414,7 @@
   }
   
   .profile-info strong {
-    color: #27AE60;
+    color: #0f0d32;
   }
   
   .profile-buttons {

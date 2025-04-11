@@ -6,46 +6,49 @@ a data visualization page using chart.js, will have to go back through all of th
 {% block content %}
 <h1>Budget Visualization for {{ selected_month }}/{{ selected_year }}</h1>
 
-<!-- Chart Container -->
+
 <canvas id="budgetComparisonChart" width="400" height="200"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Get the data passed from the view
+    
     const categories = [{% for item in comparison_data %}"{{ item.category }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
     const targetData = [{% for item in comparison_data %}{{ item.target }}{% if not forloop.last %}, {% endif %}{% endfor %}];
     const actualData = [{% for item in comparison_data %}{{ item.actual }}{% if not forloop.last %}, {% endif %}{% endfor %}];
     
-    // Create the Chart.js bar chart
+    
     const ctx = document.getElementById('budgetComparisonChart').getContext('2d');
     const budgetComparisonChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: categories,  // Categories (e.g. 'Marketing', 'Operating', etc.)
+            labels: categories,
             datasets: [{
                 label: 'Target Budget',
-                data: targetData,  // Target budget values
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Light green
-                borderColor: 'rgba(75, 192, 192, 1)',        // Darker green
+                data: targetData,  
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+                borderColor: 'rgba(75, 192, 192, 1)', 
                 borderWidth: 1
             },
             {
                 label: 'Actual Budget',
-                data: actualData,  // Actual budget values
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',  // Light red
-                borderColor: 'rgba(255, 99, 132, 1)',        // Darker red
+                data: actualData, 
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
             }]
         },
         options: {
             scales: {
                 y: {
-                    beginAtZero: true  // Ensure the y-axis starts at 0
+                    beginAtZero: true 
                 }
             }
         }
     });
 </script>
+<a href="{% url 'budget-comparison-view' %}?month={{ selected_month }}&year={{ selected_year }}">
+    <button type="button">Back to Report</button>
+</a>
 
 {% endblock %}

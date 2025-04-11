@@ -1,114 +1,133 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <h1>Target Budget for {{ current_year }}</h1>
-    
-   
-    <table class="budget-table">
-        <thead>
+<h1>Target Budget for</h1>
+
+<form method="get" id="filter-form">
+    <label for="month">Month:</label>
+    <select name="month" id="month" onchange="document.getElementById('filter-form').submit()">
+        {% for month_num, month_name in month_choices %}
+            <option value="{{ month_num }}" {% if month_num == selected_month %}selected{% endif %}>{{ month_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="year">Year:</label>
+    <select name="year" id="year" onchange="document.getElementById('filter-form').submit()">
+        {% for year in year_choices %}
+            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+        {% endfor %}
+    </select>
+</form>
+
+<table class="budget-table">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Cost Category</th>
+            <th>Description</th>
+            <th>Cost Target</th>
+            <th>Target Income</th>
+            <th>Date Added</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for budget in target_budgets %}
             <tr>
-                <th>Month</th>
-                <th>Cost Category</th>
-                <th>Description</th>
-                <th>Cost Target</th>
-                <th>Target Income</th>
-                <th>Date Added</th>
+                <td>{{ budget.get_month_display }}</td>
+                <td>{{ budget.cost_category }}</td>
+                <td>{{ budget.description }}</td>
+                <td>${{ budget.cost_target }}</td>
+                <td>${{ budget.target_month_income }}</td>
+                <td>{{ budget.date_added|date:"Y-m-d" }}</td>
+                <td>
+                    <button class="edit-btn" data-id="{{ budget.id }}">Edit</button>
+                    <button class="delete-btn" data-id="{{ budget.id }}">Delete</button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            {% for budget in target_budgets %}
-                <tr>
-                    <td>{{ budget.get_month_display }}</td>
-                    <td>{{ budget.cost_category.name }}</td>
-                    <td>{{ budget.description }}</td>
-                    <td>${{ budget.cost_target }}</td>
-                    <td>${{ budget.target_month_income }}</td>
-                    <td>{{ budget.date_added }}</td>
-                    <td>
-                        <!-- Edit and Delete buttons -->
-                        <button class="edit-btn" data-id="{{ budget.id }}">Edit</button>
-                        <button class="delete-btn" data-id="{{ budget.id }}">Delete</button>
-                    </td>
-                </tr>
-                
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    
-    <button id="add-target-budget-btn">Add Target Budget</button>
+        {% endfor %}
+    </tbody>
+</table>
 
-    
-    <div id="add-target-budget-popup" class="form-popup" style="display: none;">
-        <h2>Add Target Budget</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ target_budget_form.as_p }}
-            <button type="submit">Submit</button>
-            <button type="button" id="close-popup-btn">Close</button>
-        </form>
-    </div>
+<button id="add-target-budget-btn">Add Target Budget</button>
 
-    <!-- <div id="edit-target-budget-popup" class="form-popup" style="display: none;">
-        <h2>Edit Target Budget</h2>
-        <form id="edit-target-budget-form" method="POST">
-            {% csrf_token %}
-            {{ target_budget_form.as_p }}
-            <button type="submit">Update</button>
-            <button type="button" id="close-edit-popup-btn">Close</button>
-        </form>
-    </div> -->
+<div id="add-target-budget-popup" class="form-popup" style="display: none;">
+    <h2>Add Target Budget</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ target_budget_form.as_p }}
+        <button type="submit">Submit</button>
+        <button type="button" id="close-popup-btn">Close</button>
+    </form>
+</div>
 
-    <script>
-        
-        document.getElementById('add-target-budget-btn').addEventListener('click', function() {
-            document.getElementById('add-target-budget-popup').style.display = 'block';
+<div id="edit-target-budget-popup" class="form-popup" style="display: none;">
+    <h2>Edit Target Budget</h2>
+    <form id="edit-target-budget-form" method="POST">
+        {% csrf_token %}
+        {{ target_budget_form.as_p }}
+        <button type="submit">Update</button>
+        <button type="button" id="close-edit-popup-btn">Close</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('add-target-budget-btn').addEventListener('click', function() {
+        document.getElementById('add-target-budget-popup').style.display = 'block';
+    });
+
+    document.getElementById('close-popup-btn').addEventListener('click', function() {
+        document.getElementById('add-target-budget-popup').style.display = 'none';
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const budgetId = this.getAttribute('data-id');
+            fetch(`/target-budget/${budgetId}/edit/`)
+                .then(response => response.json())
+                .then(data => {
+                    const form = document.getElementById('edit-target-budget-form');
+                    form.action = `/target-budget/${budgetId}/edit/`;
+
+                    form.elements['month'].value = data.month;
+                    form.elements['cost_category'].value = data.cost_category;
+                    form.elements['description'].value = data.description;
+                    form.elements['cost_target'].value = data.cost_target;
+                    form.elements['target_month_income'].value = data.target_month_income;
+
+                    document.getElementById('edit-target-budget-popup').style.display = 'block';
+                });
         });
+    });
 
-        document.getElementById('close-popup-btn').addEventListener('click', function() {
-            document.getElementById('add-target-budget-popup').style.display = 'none';
+    document.getElementById('close-edit-popup-btn').addEventListener('click', function() {
+        document.getElementById('edit-target-budget-popup').style.display = 'none';
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const budgetId = this.getAttribute('data-id');
+            const confirmation = confirm('Are you sure you want to delete this budget?');
+            if (confirmation) {
+                fetch(`/target-budget/${budgetId}/delete/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                });
+            }
         });
+    });
+</script>
 
-        // document.querySelectorAll('.edit-btn').forEach(function(button) {
-        //     button.addEventListener('click', function() {
-        //         const budgetId = this.getAttribute('data-id');
-        //         // Fetch the budget data from the server using AJAX or through a prepopulated form
-        //         fetch(`/edit-budget/${budgetId}/`)
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 // Populate the form with data (for editing)
-        //                 document.getElementById('edit-target-budget-form').action = `/edit-budget/${budgetId}/`;
-        //                 // Assuming you have fields in the form, set the values accordingly
-        //                 document.getElementById('edit-target-budget-form').elements['description'].value = data.description;
-        //                 document.getElementById('edit-target-budget-form').elements['cost_target'].value = data.cost_target;
-        //                 document.getElementById('edit-target-budget-popup').style.display = 'block';
-        //             });
-        //     });
-        // });
-
-        // document.getElementById('close-edit-popup-btn').addEventListener('click', function() {
-        //     document.getElementById('edit-target-budget-popup').style.display = 'none';
-        // });
-
-        // ent.querySelectorAll('.delete-btn').forEach(function(button) {
-        //     button.addEventListener('click', function() {
-        //         const budgetId = this.getAttribute('data-id');
-        //         const confirmation = confirm('Are you sure you want to delete this budget?');
-        //         if (confirmation) {
-        //             fetch(`/delete-budget/${budgetId}/`, {
-        //                 method: 'DELETE',
-        //                 headers: {
-        //                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-        //                 },
-        //             }).then(response => {
-        //                 if (response.ok) {
-        //                     // Optionally, remove the row from the table or reload the page
-        //                     location.reload();
-        //                 }
-        //             });
-        //         }
-        //     });
-        // });   
-
-    </script>
 {% endblock %}
+
+
+<!-- the fetch methods used, and the json response are beyond my capabilities,
+so the code is researched and applied, to go down this path of trying to make 
+a more advanced and polished page for this final project -->

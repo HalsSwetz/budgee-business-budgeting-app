@@ -1,43 +1,48 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block head %}
   <meta name="description" content="BudgEase - Business Budgeting and Forecasting">
 {% endblock %}
 
 {% block content %}
   <section class="home-landing">
-    <h2 class="landing-title">Welcome to BudgEase</h2>
-    <p class="landing-description">
-      Your one-stop solution for easy and efficient business budgeting and forecasting. Manage your finances and stay on top of your budget with ease.
-    </p>
-    
-    {% if user.is_authenticated %}
-      <div class="home-action">
-        <a href="{% url 'target-budget-view' %}" class="button-link">
-          <button>View Your Budget</button>
-        </a>
-        <a href="{% url 'about' %}" class="button-link">
-          <button>Learn More</button>
-        </a>
+    <div class="landing-container">
+      <h2 class="landing-title">Welcome to BudgEase</h2>
+      <div class="parrot-image-container">
+        <img src="{% static 'images/parrot4.png' %}" alt="BudgEase Parrot" class="parrot-image">
       </div>
-    {% else %}
-      <div class="login-container">
-        <section class="login-form-section">
-          <form method="post" class="login">
-            {% csrf_token %}
-            {{ form.as_p }} 
-            <input type="hidden" name="next" value="{{ next }}" />
-            <button type="submit" class="btn submit">Login</button>
-          </form>
-        </section>
-        <div class="signup-link">
-          <p>Don't have an account?</p>
-          <a href="{% url 'signup' %}" class="button-link">
-            <button>Sign Up</button>
+      
+      <p class="landing-description">
+        Your one-stop solution for easy and efficient business budgeting and forecasting. Manage your finances and stay on top of your budget with ease.
+      </p>
+      
+      {% if user.is_authenticated %}
+        <div class="home-action">
+          <a href="{% url 'target-budget-view' %}" class="button-link">
+            <button class="action-button">View Your Budget</button>
+          </a>
+          <a href="{% url 'about' %}" class="button-link">
+            <button class="action-button">Learn More</button>
           </a>
         </div>
-      </div>
-    {% endif %}
+      {% else %}
+        <div class="login-container">
+          <section class="login-form-section">
+            <form method="post" class="login">
+              {% csrf_token %}
+              {{ form.as_p }} 
+              <input type="hidden" name="next" value="{{ next }}" />
+              <button type="submit" class="btn submit">Login</button>
+            </form>
+          </section>
+          <div class="signup-link">
+            <p>Don't have an account?</p>
+            <a href="{% url 'signup' %}" class="button-link">
+              <button class="action-button">Sign Up</button>
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
   </section>
-
 {% endblock %}

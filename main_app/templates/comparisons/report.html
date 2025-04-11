@@ -21,7 +21,7 @@
     <button type="submit">Update</button>
 </form>
 
-<table>
+<table class="budget-table">
     <thead>
         <tr>
             <th>Category</th>
@@ -38,9 +38,16 @@
             <td>{{ item.target }}</td>
             <td>{{ item.actual }}</td>
             <td>{{ item.variance_amount }}</td>
-            <td>{{ item.variance_percentage }}%</td>
+            <td>{{ item.variance_percentage|floatformat:1 }}%</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<div class="totals">
+    <p><strong>Total Target Cost:</strong> {{ total_target_cost }}</p>
+    <p><strong>Total Actual Cost:</strong> {{ total_actual_cost }}</p>
+</div>
+<a href="{% url 'budget-comparison-visualization' %}?month={{ selected_month }}&year={{ selected_year }}">
+    <button type="button">View as Chart</button>
+</a>
 {% endblock %}

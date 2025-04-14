@@ -105,9 +105,12 @@ def edit_target_budget(request, pk):
     elif request.method == 'POST':
         form = TargetBudgetForm(request.POST, instance=target_budget)
         if form.is_valid():
-            form.save()
+            updated_budget = form.save()
 
-            return redirect('target-budget-view')
+            selected_month = updated_budget.month
+            selected_year = updated_budget.year
+
+            return redirect(f'/target-budget/?month={selected_month}&year={selected_year}')
 
         return JsonResponse({'errors': form.errors}, status=400)
 
@@ -177,9 +180,12 @@ def edit_actual_budget(request, pk):
     elif request.method == 'POST':
         form = ActualBudgetForm(request.POST, instance=actual_budget)
         if form.is_valid():
-            form.save()
+            updated_budget = form.save()
 
-            return redirect('actual-budget-view')
+            selected_month = updated_budget.month
+            selected_year = updated_budget.year
+
+            return redirect(f'/actual-budget/?month={selected_month}&year={selected_year}')
 
         return JsonResponse({'errors': form.errors}, status=400)
     

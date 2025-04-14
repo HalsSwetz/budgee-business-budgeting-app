@@ -11,7 +11,7 @@ BudgEase gives you insight into your business's financial health in real time.
 
 ## Getting Started
 
-[Deployed BudgEase App]()
+[Deployed BudgEase App](https://budgease-budgeting-app-9ca6cd57c6c3.herokuapp.com/) 
 
 [Trello Board for Project Planning](https://trello.com/b/sR5IxMzA/budgee-a-business-forecasting-and-budgeting-application)
 
@@ -48,8 +48,8 @@ BudgEase gives you insight into your business's financial health in real time.
 ## Next Steps/Stretch Goals
 
 - Tagging individual items to make the database searchable by any tag a user chooses to apply to many items
-- Mobile access to the Application for easy and fast additions of actual budget items
-- Team accounts with multi-user support
+- Mobile access to the application for easy and fast additions of actual budget items
+- Team accounts with multi-user capability
 - Better connection and tracking with monthly income tools like Quickbooks
 - Email reminders for monthly entries
 

@@ -123,8 +123,8 @@ def actual_budget_view(request):
     current_year = datetime.now().year
     current_month = datetime.now().month
 
-    selected_month = request.GET.get('month', current_month)
-    selected_year = request.GET.get('year', current_year)
+    selected_month = int(request.GET.get('month', current_month))
+    selected_year = int(request.GET.get('year', current_year))
 
     month_choices = [(i, month_name[i]) for i in range(1, 13)]
     year_choices = [year for year in range(current_year - 1, current_year + 5)]
@@ -141,12 +141,15 @@ def actual_budget_view(request):
     })
 
     if request.method == 'POST':
+
+        selected_month = int(request.GET.get('month', current_month))
+        selected_year = int(request.GET.get('year', current_year))
+
         form = ActualBudgetForm(request.POST)
         if form.is_valid():
             new_budget = form.save(commit=False)
             new_budget.user = request.user
             new_budget.save()
-            
             return redirect(f"{request.path}?month={selected_month}&year={selected_year}")
 
     return render(request, 'actual_budget/create.html', {

@@ -18,6 +18,9 @@ import dj_database_url
 
 load_dotenv()
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://budgease-budgeting-app-9ca6cd57c6c3.herokuapp.com'
+]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

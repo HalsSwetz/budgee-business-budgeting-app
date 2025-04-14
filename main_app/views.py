@@ -24,7 +24,7 @@ def about(request):
 
 @login_required
 def profile(request):
-    user_profile = UserProfile.objects.get(user=request.user)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     return render(request, 'profile.html', {
         'user_profile': user_profile
@@ -40,7 +40,7 @@ def signup(request):
             user = form.save()
             UserProfile.objects.create(user=user)
             login(request, user)
-            return redirect('profile/')
+            return redirect('profile')
         else:
             error_message = 'Invalid sign up - try again'
 

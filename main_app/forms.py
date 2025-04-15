@@ -2,6 +2,8 @@ from django import forms
 from .models import TargetBudget, ActualBudget, CostCategory
 from datetime import datetime
 
+
+
 CURRENT_YEAR = datetime.now().year
 YEAR_CHOICES = [(i, str(i)) for i in range(CURRENT_YEAR, CURRENT_YEAR + 11)]
 
@@ -16,7 +18,6 @@ class TargetBudgetForm(forms.ModelForm):
         queryset=CostCategory.objects.all(), 
         empty_label="Select a Category"  
     )
-
 
 
 class ActualBudgetForm(forms.ModelForm):

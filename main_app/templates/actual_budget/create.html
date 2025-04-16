@@ -69,9 +69,6 @@
         <button type="button" id="close-edit-popup-btn">Close</button>
     </form>
 </div>
-<!-- using script tags for js and being able to operate crud actions sending json was
-a researched and implemented method to achieve the functionality on my page I was
-really interested in trying to figure out -->
 <script>
     document.getElementById('add-actual-budget-btn').addEventListener('click', function() {
         document.getElementById('add-actual-budget-popup').style.display = 'block';
@@ -101,9 +98,6 @@ really interested in trying to figure out -->
     document.getElementById('close-edit-popup-btn').addEventListener('click', function() {
         document.getElementById('edit-actual-budget-popup').style.display = 'none';
     });
-// this is not all code I knew when I started trying to add the edit and delete functionality this way
-// but, after getting the add function on the page this way I realized i just needed research and to work backward from what
-// I wanted the page to do, and particularly the fetch method being used I needed to learn about for python/django app
     document.querySelectorAll('.delete-btn').forEach(function(button) {
         button.addEventListener('click', function() {
             const budgetId = this.getAttribute('data-id');
